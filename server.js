@@ -22,7 +22,7 @@ mongoose.connect("mongodb://localhost:27017/lab3").then(() => {
     console.log("Connection failure" + error);
 })
 
-//Schema
+//Schema för jobb
 const schema = new mongoose.Schema({
     companyname: {
         type: String,
@@ -43,12 +43,12 @@ const schema = new mongoose.Schema({
     startdate: {
         type: String,
         required: [true, `Startdate is required`],
-        match: [/^\d{4}-\d{2}-\d{2}$/, `Not a valid date, format: XXXX-XX-XX`]
+        match: [/^\d{4}-\d{2}-\d{2}$/, `Not a valid date, format: XXXX-XX-XX`] //validering av korrekt datumformat
     },
     enddate: {
         type: String,
         required: [true, `Enddate is required`],
-        match: [/^\d{4}-\d{2}-\d{2}$/, `Not a valid date, format: XXXX-XX-XX`]
+        match: [/^\d{4}-\d{2}-\d{2}$/, `Not a valid date, format: XXXX-XX-XX`] //validering av korrekt datumformat
     },
 }, { timestamps: true });
 
@@ -62,13 +62,13 @@ app.get("/", async (req, res) => {
 
 app.get("/jobs", async (req, res) => {
     try {
-        let result = await Job.find({}); //Hämta all data'
+        let result = await Job.find({}); //Query för att hämta alla jobb'
 
         //kontroll om databas saknar data
         if (result.length === 0) {
             res.status(404).json({ message: "No jobs found" });
         } else {
-            return res.json(result); //returnera resonse med data
+            return res.json(result); //returnera response med alla jobb
         }
     } catch (error) {
         return res.status(500).json(error); // felmeddelande
@@ -78,26 +78,26 @@ app.get("/jobs", async (req, res) => {
 app.get("/jobs/:id", async (req, res) => {
 
     try {
-        let result = await Job.find({ _id: req.params.id });
+        let result = await Job.find({ _id: req.params.id }); //query för att hämta specifikt jobb
 
-        return res.json(result);
+        return res.json(result); // returnerar response med specifikt jobb
     } catch (error) {
-        return res.status(400).json({ message: `ID not found. Error-message: ${error}` });
+        return res.status(400).json({ message: `ID not found. Error-message: ${error}` }); //felmeddelande
     }
 })
 
 app.post("/jobs", async (req, res) => {
     try {
-        let result = await Job.create(req.body);
-        return res.json(result);
+        let result = await Job.create(req.body); // query för att lägga till jobb i databas
+        return res.json(result); //returnerar response vid lyckad lagring
     } catch (error) {
-        return res.status(400).json(error);
+        return res.status(400).json(error); // felmeddelande
     }
 })
 
 app.put("/jobs/:id", async (req, res) => {
-    const query = { _id: req.params.id };
-    const update = {
+    const query = { _id: req.params.id }; //id för vilket jobb som ska uppdaterad
+    const update = { // parametrar för uppdatering
         $set: {
             companyname: req.body.companyname,
             jobtitle: req.body.jobtitle,
@@ -109,10 +109,21 @@ app.put("/jobs/:id", async (req, res) => {
     };
 
     try {
-        let result = await Job.updateOne(query, update);
-        return res.json({ message: `Success! Job with ID: ${req.params.id} is now changed.` });
+        let result = await Job.updateOne(query, update); //query för att uppdatera ett specifikt jobb i databas
+        return res.json({ message: `Success! Job with ID: ${req.params.id} is now changed.` }); //meddelande vid lyckade uppdatering
     } catch (error) {
-        return res.status(400).json({ message: `ID not found. Error-message: ${error}` });
+        return res.status(400).json({ message: `ID not found. Error-message: ${error}` }); // felmeddelande
+    }
+})
+
+app.delete("/jobs/:id", async (req, res) => {
+    const query = { _id: req.params.id }; // id för specifikt jobb
+
+    try {
+        let result = await Job.deleteOne(query);
+        return res.json({ message: `Success! Job with ID: ${query._id} is now deleted.`});// query för att radera specifikt jobb
+    } catch(error) {
+        return res.status(400).json({ message: `ID not found. Error-message: ${error}`}); // felmeddelande
     }
 })
 
