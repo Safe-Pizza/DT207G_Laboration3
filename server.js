@@ -26,27 +26,29 @@ mongoose.connect("mongodb://localhost:27017/lab3").then(() => {
 const schema = new mongoose.Schema({
     companyname: {
         type: String,
-        required: true
+        required: [true, `Companyname is required`]
     },
     jobtitle: {
         type: String,
-        required: true
+        required: [true, `Jobtitle is required`]
     },
     location: {
         type: String,
-        required: true
+        required: [true, `Location is required`]
     },
     description: {
         type: String,
-        required: true
+        required: [true, `Description is required`]
     },
     startdate: {
         type: String,
-        required: true
+        required: [true, `Startdate is required`],
+        match: [/^\d{4}-\d{2}-\d{2}$/, `Not a valid date, format: XXXX-XX-XX`]
     },
     enddate: {
         type: String,
-        required: true
+        required: [true, `Enddate is required`],
+        match: [/^\d{4}-\d{2}-\d{2}$/, `Not a valid date, format: XXXX-XX-XX`]
     },
 }, { timestamps: true });
 
