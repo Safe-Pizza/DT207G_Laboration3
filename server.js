@@ -79,7 +79,9 @@ app.get("/jobs/:id", async (req, res) => {
 
     try {
         let result = await Job.find({ _id: req.params.id }); //query för att hämta specifikt jobb
-
+        if (result.length === 0) {
+            return res.status(404).json({ message: "No job found with that ID" });
+        }
         return res.json(result); // returnerar response med specifikt jobb
     } catch (error) {
         return res.status(404).json({ message: `ID not found. Error-message: ${error}` }); //felmeddelande
@@ -111,9 +113,12 @@ app.delete("/jobs/:id", async (req, res) => {
 
     try {
         let result = await Job.deleteOne(query);
-        return res.status(204).json({ message: `Success! Job with ID: ${query._id} is now deleted.` });// query för att radera specifikt jobb
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: "No job found with that ID" });
+        }
+        return res.json({ message: `Success! Job with ID: ${query._id} is now deleted.` });// query för att radera specifikt jobb
     } catch (error) {
-        return res.status(400).json({ message: `ID not found. Error-message: ${error}` }); // felmeddelande
+        return res.status(400).json({ message: `Error-message: ${error}` }); // felmeddelande
     }
 })
 
