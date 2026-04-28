@@ -96,23 +96,13 @@ app.post("/jobs", async (req, res) => {
 })
 
 app.put("/jobs/:id", async (req, res) => {
-    const query = { _id: req.params.id }; //id för vilket jobb som ska uppdaterad
-    const update = { // parametrar för uppdatering
-        $set: {
-            companyname: req.body.companyname,
-            jobtitle: req.body.jobtitle,
-            location: req.body.location,
-            description: req.body.description,
-            startdate: req.body.startdate,
-            enddate: req.body.enddate
-        }
-    };
-
+    const query = { _id: req.params.id }; // id för specifikt jobb
+    const update = req.body; //uppdatering av jobb
     try {
-        let result = await Job.updateOne(query, update); //query för att uppdatera ett specifikt jobb i databas
+        let result = await Job.updateOne(query, update, { runValidators: true }); //query för att uppdatera ett specifikt jobb i databas
         return res.json({ message: `Success! Job with ID: ${req.params.id} is now changed.` }); //meddelande vid lyckade uppdatering
     } catch (error) {
-        return res.status(400).json({ message: `ID not found. Error-message: ${error}` }); // felmeddelande
+        return res.status(400).json({ message: `Error-message: ${error}` }); // felmeddelande
     }
 })
 
@@ -121,9 +111,9 @@ app.delete("/jobs/:id", async (req, res) => {
 
     try {
         let result = await Job.deleteOne(query);
-        return res.json({ message: `Success! Job with ID: ${query._id} is now deleted.`});// query för att radera specifikt jobb
-    } catch(error) {
-        return res.status(400).json({ message: `ID not found. Error-message: ${error}`}); // felmeddelande
+        return res.json({ message: `Success! Job with ID: ${query._id} is now deleted.` });// query för att radera specifikt jobb
+    } catch (error) {
+        return res.status(400).json({ message: `ID not found. Error-message: ${error}` }); // felmeddelande
     }
 })
 
