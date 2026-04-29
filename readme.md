@@ -6,7 +6,7 @@ APIet är byggt för att hantera tidigare arbetserfarenheter såsom arbetsplats,
 CRUD (Create, Read, Update and Delete) är implementerat.
 
 ## Redovsning
-[Redovisningsvideo]()
+[Webbtjänst](https://dt207g-laboration3.onrender.com/jobs)
 
 ## Databas
 APIet använder MongoDb som databas med Mongoose.
