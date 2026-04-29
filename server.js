@@ -2,12 +2,16 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 
 //variabel för express
 const app = express();
 
 //variabel för port
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
+
+//
+const dbURI = process.env.MONGODB_URI;
 
 //cross-origin
 app.use(cors());
@@ -16,8 +20,8 @@ app.use(cors());
 app.use(express.json());
 
 //Anslutning databas
-mongoose.connect("mongodb://localhost:27017/lab3").then(() => {
-    console.log("Conntected to database");
+mongoose.connect(dbURI).then(() => {
+    console.log("Connected to database");
 }).catch((error) => {
     console.log("Connection failure" + error);
 })
